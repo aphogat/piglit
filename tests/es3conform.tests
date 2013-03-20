@@ -49,7 +49,7 @@ class GTFTest(ExecTest):
     pass_re = re.compile(r'(Conformance|Regression) PASSED all (?P<passed>\d+) tests')
 
     def __init__(self, testpath):
-        ExecTest.__init__(self, [path.join(testBinDir, 'GTF3'), '-minfmt', '-width=113', '-height=47', '-run=' + testpath])
+        ExecTest.__init__(self, [path.join(testBinDir, 'GTF3'), '-glmajor=3', '-glminor=1', '-minfmt', '-width=113', '-height=47', '-run=' + testpath])
 
     def interpretResult(self, out, returncode, results):
         mo = self.pass_re.search(out)
