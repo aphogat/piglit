@@ -2469,7 +2469,7 @@ for num_samples in MSAA_SAMPLE_COUNTS:
     ext_framebuffer_multisample[test_name] = concurrent_test(
         'ext_framebuffer_multisample-' + test_name)
 
-for num_samples in MSAA_SAMPLE_COUNTS:
+for num_samples in ('inc_all_samples', 'dec_all_samples', ) + MSAA_SAMPLE_COUNTS:
     for test_type in ('color', 'srgb', 'stencil_draw', 'stencil_resolve',
                       'depth_draw', 'depth_resolve'):
         sensible_options = ['small', 'depthstencil']
