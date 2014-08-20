@@ -61,6 +61,7 @@ bool small = false, combine_depth_stencil = false;
 bool inc_all_samples = false, dec_all_samples = false;
 GLenum filter_mode = GL_NEAREST;
 test_type_enum test_type;
+Test *test = NULL;
 
 NORETURN void
 print_usage_and_exit(char *prog_name)
@@ -141,12 +142,17 @@ piglit_init(int argc, char **argv)
 	} else {
 		print_usage_and_exit(argv[0]);
 	}
+
+	test = create_test(test_type, num_samples, small,
+				 combine_depth_stencil,
+				 pattern_width, pattern_height, supersample_factor,
+				 filter_mode);
 }
 
 bool
 test_create_and_execute()
 {
-	Test *test = create_test(test_type, num_samples, small,
+	test = create_test(test_type, num_samples, small,
 				 combine_depth_stencil,
 				 pattern_width, pattern_height, supersample_factor,
 				 filter_mode);
@@ -159,7 +165,8 @@ piglit_display()
 	bool pass = true;
 
 	if (!inc_all_samples && !dec_all_samples)
-		pass = test_create_and_execute() && pass;
+//		pass = test_create_and_execute() && pass;
+		pass = test->run() && pass;
 
 	for (num_samples = 0; num_samples <= max_samples && inc_all_samples; ) {
 		pass = test_create_and_execute() && pass;
