@@ -56,7 +56,6 @@ PIGLIT_GL_TEST_CONFIG_END
 
 const int pattern_width = 256; const int pattern_height = 256;
 const int supersample_factor = 16;
-Test *test = NULL;
 int num_samples, max_samples;
 bool small = false, combine_depth_stencil = false;
 bool inc_all_samples = false, dec_all_samples = false;
@@ -147,10 +146,10 @@ piglit_init(int argc, char **argv)
 bool
 test_create_and_execute()
 {
-	test = create_test(test_type, num_samples, small,
-			   combine_depth_stencil,
-			   pattern_width, pattern_height, supersample_factor,
-			   filter_mode);
+	Test *test = create_test(test_type, num_samples, small,
+				 combine_depth_stencil,
+				 pattern_width, pattern_height, supersample_factor,
+				 filter_mode);
 	return test->run();
 }
 
@@ -164,14 +163,20 @@ piglit_display()
 
 	for (num_samples = 0; num_samples <= max_samples && inc_all_samples; ) {
 		pass = test_create_and_execute() && pass;
+		pass = piglit_check_gl_error(GL_NO_ERROR) && pass;
 		num_samples = num_samples ? num_samples << 1: num_samples + 2;
 	}
 
 	for (num_samples = max_samples; num_samples >= 0 && dec_all_samples; ) {
+		glClearColor(1.0, 0.0, 0.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		pass = test_create_and_execute() && pass;
+		pass = piglit_check_gl_error(GL_NO_ERROR) && pass;
+		piglit_present_results();
 		num_samples = (num_samples > 2) ? num_samples >> 1 : num_samples - 2;
 	}
 
+	pass = piglit_check_gl_error(GL_NO_ERROR) && pass;
 	piglit_present_results();
 
 	return pass ? PIGLIT_PASS : PIGLIT_FAIL;
